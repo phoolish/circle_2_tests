@@ -1,0 +1,13 @@
+version: 2
+
+jobs:
+  build:
+    working_directory: ~/circle_2_tests
+    docker:
+      - image: circleci/ruby:latest
+    steps:
+      - checkout
+      - run:
+          command: |
+            exit 0
+            exit 1
