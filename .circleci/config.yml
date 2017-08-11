@@ -5,12 +5,17 @@ jobs:
     working_directory: ~/circle_2_tests
     docker:
       - image: circleci/ruby:latest
+        environment:
+          TEST_ENV: image
     steps:
       - checkout
       - run:
           command: |
+            echo $TEST_ENV
             exit 0
             exit 1
+          environment:
+            TEST_ENV: step
       - run:
           command: |
             exit 1
