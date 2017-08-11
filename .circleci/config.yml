@@ -23,5 +23,4 @@ jobs:
             echo $TRIGGER_PATHS
             echo $RUN_STEP
           environment:
-            IGNORE_PATHS: ignored2
-            TRIGGER_PATHS: triggered2
+            IGNORE_PATHS: circleci

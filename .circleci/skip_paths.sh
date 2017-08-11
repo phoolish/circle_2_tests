@@ -15,30 +15,15 @@
   # Decide to RUN_IMAGE or not
 
 # If necessary, set defaults for image/step.
-is_array() {
-  local variable_name=$1
-  [[ "$(declare -p $variable_name)" =~ "declare -a" ]]
-}
-
-make_array() {
-  local var1=$1
-
-  if ! is_array $var1; then
-    var1=($var1)
-  fi
-
-  return $var1
-}
 
 IGNORE_PATHS=${IGNORE_PATHS:-}
+RUN_STEP=${RUN_STEP:-true}
 TRIGGER_PATHS=${TRIGGER_PATHS:-}
 
-RUN_STEP=${RUN_STEP:-}
+IGNORE_PATHS=($IGNORE_PATHS)
+TRIGGER_PATHS=($TRIGGER_PATHS)
 
-TRIGGER_PATHS=`make_array $TRIGGER_PATHS`
-IGNORE_PATH=`make_array $IGNORE_PATHS`
-
-if [ ${#STEP_IGNORE_PATH[@]} -eq 0 ]; then
+if [ ${#IGNORE_PATHS[@]} -eq 0 ]; then
   echo "Nothing to skip"
   echo "export RUN_STEP=true" >> $BASH_ENV
   exit 0
@@ -49,15 +34,16 @@ MASTER_SHA1=`git merge-base origin/master HEAD`
 for git_path in `git diff --name-only $MASTER_SHA1`; do
   for trigger in ${TRIGGER_PATHS[@]}; do
     if [[ $git_path =~ $trigger ]]; then
-      echo "export RUN_STEP=true" >> $BASH_ENV
-      exit 0
+      break
     fi
   done
 
   for ignore in ${IGNORE_PATHS[@]}; do
     if [[ $git_path =~ $trigger ]]; then
-      echo "export RUN_STEP=false" >> $BASH_ENV
-      exit 0
+      RUN_STEP=false
+      break
     fi
   done
 done
+
+echo "export RUN_STEP=$RUN_STEP" >> $BASH_ENV
