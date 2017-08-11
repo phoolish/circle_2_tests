@@ -19,6 +19,7 @@ jobs:
             echo $RUN_STEP
       - run:
           command: |
+            bash .circleci/skip_paths.sh
             echo $IGNORE_PATHS
             echo $TRIGGER_PATHS
             echo $RUN_STEP
