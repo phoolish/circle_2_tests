@@ -6,16 +6,22 @@ jobs:
     docker:
       - image: circleci/ruby:latest
         environment:
-          TEST_ENV: image
+          IGNORE_PATHS: ignored1
+          TRIGGER_PATHS: trigger1
     steps:
       - checkout
       - run:
-          command: |
-            echo $TEST_ENV
-            exit 0
-            exit 1
-          environment:
-            TEST_ENV: step
+          command: bash .circleci/skip_paths.sh
       - run:
           command: |
-            exit 1
+            echo $IGNORE_PATHS
+            echo $TRIGGER_PATHS
+            echo $RUN_STEP
+      - run:
+          command: |
+            echo $IGNORE_PATHS
+            echo $TRIGGER_PATHS
+            echo $RUN_STEP
+          environment:
+            IGNORE_PATHS: ignored2
+            TRIGGER_PATHS: triggered2
